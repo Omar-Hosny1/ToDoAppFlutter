@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // ignore: non_constant_identifier_names
-  List todoList = [];
+  List<ToDoItem> todoList = [];
 
   void _onRemoveItem(String id) {
     setState(() {
@@ -45,6 +45,9 @@ class _MyHomePageState extends State<MyHomePage> {
         todoTitle: text,
         id: DateTime.now().toString(),
         onRemoveItem: _onRemoveItem,
+        key: ValueKey(
+          DateTime.now().toString(),
+        ),
       ));
     });
   }
@@ -76,18 +79,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
-        appBar: appBar,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color.fromARGB(255, 80, 94, 106),
-          child: const Icon(Icons.add),
-          onPressed: () => _startAddNewItem(context),
-        ),
-        body: Container(
-            height: (mediaQuery.size.height -
-                    appBar.preferredSize.height -
-                    mediaQuery.padding.top) *
-                0.98,
-            child: Todos(todoList: todoList)));
+      appBar: appBar,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 80, 94, 106),
+        child: const Icon(Icons.add),
+        onPressed: () => _startAddNewItem(context),
+      ),
+      body: Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.98,
+        child: Todos(todoList: todoList),
+      ),
+    );
   }
 }
