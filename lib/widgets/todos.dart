@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Todos extends StatefulWidget {
-  final List todoList;
-  const Todos({super.key, required this.todoList});
+import '../models/Todos.dart';
+import './todo_item.dart';
 
-  @override
-  State<Todos> createState() => _TodosState();
-}
+class Todos extends StatelessWidget {
+  const Todos({super.key});
 
-class _TodosState extends State<Todos> {
   @override
   Widget build(BuildContext context) {
-    return widget.todoList.isEmpty
+    final todosData = Provider.of<TodosProvider>(context);
+    return todosData.items.isEmpty
         ? const Center(
             child: Text(
               "NO ITEMS YET",
               style: TextStyle(fontSize: 25, color: Colors.white),
             ),
           )
-        : Container(
+        : SizedBox(
             height: MediaQuery.of(context).size.height * 0.8,
             child: ListView.builder(
               itemBuilder: ((context, index) {
-                return widget.todoList[index];
+                return ChangeNotifierProvider.value(
+                  value: todosData.items[index],
+                  child: ToDoItemWidget(),
+                );
               }),
-              itemCount: widget.todoList.length,
+              itemCount: todosData.items.length,
             ),
           );
   }

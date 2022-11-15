@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/widgets/todos.dart';
+import 'package:provider/provider.dart';
+
 import './widgets/new_todo.dart';
-import './widgets/todo_item.dart';
+import './widgets/todos.dart';
+import './models/Todos.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,12 +13,19 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'To Do App',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 45, 54, 62),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => TodosProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'To Do App',
+        theme: ThemeData(
+          scaffoldBackgroundColor: const Color.fromARGB(255, 45, 54, 62),
+        ),
+        home: const MyHomePage(title: 'TO DO APP'),
       ),
-      home: const MyHomePage(title: 'TO DO APP'),
     );
   }
 }
@@ -31,26 +40,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // ignore: non_constant_identifier_names
-  List<ToDoItem> todoList = [];
+  // List<ToDoItem> todoList = [];
 
-  void _onRemoveItem(String id) {
-    setState(() {
-      todoList.removeWhere((element) => element.id == id);
-    });
-  }
+  // void _onRemoveItem(String id) {
+  //   setState(() {
+  //     todoList.removeWhere((element) => element.id == id);
+  //   });
+  // }
 
-  void _onAddTodo(String text) {
-    setState(() {
-      todoList.add(ToDoItem(
-        todoTitle: text,
-        id: DateTime.now().toString(),
-        onRemoveItem: _onRemoveItem,
-        key: ValueKey(
-          DateTime.now().toString(),
-        ),
-      ));
-    });
-  }
+  // void _onAddTodo(String text) {
+  //   setState(() {
+  //     todoList.add(ToDoItem(
+  //       todoTitle: text,
+  //       id: DateTime.now().toString(),
+  //       onRemoveItem: _onRemoveItem,
+  //       key: ValueKey(
+  //         DateTime.now().toString(),
+  //       ),
+  //     ));
+  //   });
+  // }
 
   void _startAddNewItem(BuildContext ctx) {
     showModalBottomSheet(
@@ -60,10 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {},
           behavior: HitTestBehavior.opaque,
           child: Container(
-              color: const Color.fromARGB(255, 55, 66, 73),
-              child: NewToDo(
-                onAddTodo: _onAddTodo,
-              )),
+              color: const Color.fromARGB(255, 55, 66, 73), child: NewToDo()),
         );
       },
     );
@@ -86,12 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
         onPressed: () => _startAddNewItem(context),
       ),
-      body: Container(
+      body: SizedBox(
         height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
                 mediaQuery.padding.top) *
             0.98,
-        child: Todos(todoList: todoList),
+        child: const Todos(),
       ),
     );
   }

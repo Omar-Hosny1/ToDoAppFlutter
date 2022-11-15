@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/models/Todo.dart';
+import 'package:to_do_app/models/Todos.dart';
 
 class NewToDo extends StatefulWidget {
-  final Function onAddTodo;
+  // final Function onAddTodo;
 
-  NewToDo({super.key, required this.onAddTodo});
+  const NewToDo({super.key});
 
   @override
   State<NewToDo> createState() => _NewToDoState();
@@ -15,7 +18,13 @@ class _NewToDoState extends State<NewToDo> {
   void onSubmitToAddTodo() {
     String textField = todoTitleController.text;
     if (textField == "") return;
-    widget.onAddTodo(textField);
+    Provider.of<TodosProvider>(context, listen: false).onAddTodo(
+      item: TodoItem(
+        id: DateTime.now().toString(),
+        text: todoTitleController.text,
+      ),
+    );
+
     Navigator.of(context).pop();
   }
 
@@ -23,6 +32,7 @@ class _NewToDoState extends State<NewToDo> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final todos = Provider.of<TodosProvider>(context);
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(
@@ -60,13 +70,18 @@ class _NewToDoState extends State<NewToDo> {
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 7),
               child: ElevatedButton(
-                onPressed: onSubmitToAddTodo,
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white70)),
+                onPressed: () {
+                  onSubmitToAddTodo();
+                },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Text(
                     "ADD TO DO",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),
